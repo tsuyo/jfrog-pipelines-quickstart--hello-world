@@ -2,8 +2,8 @@ resources:
   - name: myAppRepo
     type: GitRepo
     configuration:
-      gitProvider: myGitHub                  # Change to your integration
-      path: tsuyo/jfrog-pipelines-quickstart # Change to your repo
+      gitProvider: myGitHub                              # Change to your integration
+      path: tsuyo/jfrog-pipelines-quickstart-hello-world # Change to your repo
 
 pipelines:
   - name: pipeline_hello_world
