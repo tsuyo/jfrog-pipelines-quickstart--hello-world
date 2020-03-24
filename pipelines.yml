@@ -6,7 +6,7 @@ resources:
       path: tsuyo/jf-pipelines-qs-hello-world # Change to your repo
 
 pipelines:
-  - name: pipeline_hello_world
+  - name: quickstart-hello-world
     configuration:
       environmentVariables:
         readOnly:
