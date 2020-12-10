@@ -2,7 +2,7 @@ resources:
   - name: myAppRepo
     type: GitRepo
     configuration:
-      gitProvider: myGitHub                   # Change to your integration
+      gitProvider: tsuyo_github                   # Change to your integration
       path: tsuyo/jf-pipelines-qs-hello-world # Change to your repo
 
 pipelines:
