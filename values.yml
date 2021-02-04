@@ -1,0 +1,3 @@
+myRepo:
+  gitProvider: tsuyo_github
+  path: tsuyo/jfrog-pipelines--quickstart-hello-world
