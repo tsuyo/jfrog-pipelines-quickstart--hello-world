@@ -4,5 +4,5 @@ Sources for [Pipeline Example: Hello World](https://www.jfrog.com/confluence/dis
 
 ## Prerequisites
 
-- Integration
+- Integrations
   - tsuyo_github: GitHub
