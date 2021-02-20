@@ -1,5 +1,5 @@
 pipelines:
-  name: quickstart-hello-world
+  name: quickstart_hello_world
 gitRepo:
   name: github__tsuyo__jfrog_pipelines_quickstart__hello-world
   provider: tsuyo_github  
