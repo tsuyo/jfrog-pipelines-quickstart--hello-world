@@ -2,62 +2,60 @@ template: true   # required for local templates
 valuesFilePath: ./values.yml
 
 resources:
-  - name: myFirstRepo
+  - name: {{ .Values.gitRepo.name }}
     type: GitRepo
     configuration:
-      # SCM integration where the repository is located
-      gitProvider: {{ .Values.myRepo.gitProvider }} # this will be replaced from values.yml
-      # Repository path, including org name/repo name
-      path: {{ .Values.myRepo.path }} # this will be replaced from values.yml
-      branches:
-        # Specifies which branches will trigger dependent steps
-        include: master
+      gitProvider: {{ .Values.gitRepo.provider }}
+      path: {{ .Values.gitRepo.path }}
+      # branches:
+      #   include: master
 
-  - name: myPropertyBag
+  - name: {{ .Values.pipelines.name }}
     type: PropertyBag
     configuration:
       commitSha: 1
       runID: 1
 
 pipelines:
-  - name: my_first_pipeline
+  - name: "{{ .Values.pipelines.name }}_1"
     steps:
-      - name: p1_s1
+      - name: bash_1
         type: Bash
         configuration:
           inputResources:
-            # Sets up step to be triggered when there are commit events to myFirstRepo
-            - name: myFirstRepo
+            - name: {{ .Values.gitRepo.name }}
         execution:
           onExecute:
             # Data from input resources is available as env variables in the step
-            - echo $res_myFirstRepo_commitSha
+            - echo ${res_{{ .Values.gitRepo.name }}_commitSha}
             # The next two commands add variables to run state, which is available to all downstream steps in this run
             # Run state documentation: https://www.jfrog.com/confluence/display/JFROG/Creating+Stateful+Pipelines#CreatingStatefulPipelines-RunState
             - add_run_variables current_runid=$run_id
-            - add_run_variables commitSha=$res_myFirstRepo_commitSha
-            # This variable is written to pipeline state in p1_s3.
+            - add_run_variables commitSha=${res_{{ .Values.gitRepo.name }}_commitSha}
+            # This variable is written to pipeline state in bash_3.
             # So this will be empty during first run and will be set to prior run number in subsequent runs
             # Pipeline state documentation: https://www.jfrog.com/confluence/display/JFROG/Creating+Stateful+Pipelines#CreatingStatefulPipelines-PipelineState
             - echo "Previous run ID is $prev_runid"
+            - echo "Current run ID is $current_runid"
+            
 
-      - name: p1_s2
+      - name: bash_2
         type: Bash
         configuration:
           inputSteps:
-            - name: p1_s1
+            - name: bash_1
         execution:
           onExecute:
-            # Demonstrates the availability of an env variable written to run state during p1_s1
+            # Demonstrates the availability of an env variable written to run state during bash_1
             - echo $current_runid
 
-      - name: p1_s3
+      - name: bash_3
         type: Bash
         configuration:
           inputSteps:
-            - name: p1_s2
+            - name: bash_2
           outputResources:
-            - name: myPropertyBag
+            - name: {{ .Values.pipelines.name }}
         execution:
           onExecute:
             - echo $current_runid
@@ -66,17 +64,17 @@ pipelines:
             # Uses an utility function to update the output resource with the commitSha that triggered this run
             # Dependent pipelines can be configured to trigger when this resource is updated
             # Utility functions documentation: https://www.jfrog.com/confluence/display/JFROG/Pipelines+Utility+Functions
-            - write_output myPropertyBag commitSha=$commitSha runID=$current_runid
+            - write_output {{ .Values.pipelines.name }} commitSha=$commitSha runID=$current_runid
 
-  - name: my_second_pipeline
+  - name: "{{ .Values.pipelines.name }}_2"
     steps:
-      - name: p2_s1
+      - name: bash
         type: Bash
         configuration:
           inputResources:
             # Sets up step to be triggered when myPropertyBag is updated
-            - name: myPropertyBag
+            - name: {{ .Values.pipelines.name }}
         execution:
           onExecute:
             # Retrieves the commitSha from input resource
-            - echo "CommitSha is $res_myPropertyBag_commitSha"
+            - echo "CommitSha is ${res_{{ .Values.pipelines.name }}_commitSha}"
