@@ -1,6 +1,6 @@
 pipelines:
   name: quickstart_hello_world
 gitRepo:
-  name: github__tsuyo__jfrog_pipelines_quickstart__hello_world
-  provider: tsuyo_github  
+  name: github__jfrog_pipelines_quickstart__hello_world
+  provider: github
   path: tsuyo/jfrog-pipelines-quickstart--hello-world
